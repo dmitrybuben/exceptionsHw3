@@ -16,21 +16,27 @@ public class Presenter {
                 "sex(m or f),dividing the entries with the space)");
 
         String readData = view.str();
-        System.out.println(readData);
 
-        int res = model.checkFieldsQty(readData);
+        String[] array = model.makeMas(readData);
+
+        int res = model.checkFieldsQty(array);
         switch (res) {
             case -1 -> view.print(res + "\n" + "You entered not enough data - try again");
             case -2 -> view.print(res + "\n" + "You entered too much data - try again");
             default -> view.print("You have entered exact data quantity");
         }
 
-        model.checkFieldsFormat();
+
+        try {
+            model.checkFieldsFormat(array);
+        } catch (ArrayIndexOutOfBoundsException e){
+            System.out.println("Wrong array size");
+        }
 
         try {
             model.writeToFile();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error file writing");
         }
     }
 }

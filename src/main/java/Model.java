@@ -1,56 +1,55 @@
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 
 public class Model {
 
     public int fieldsQty = 6;
-    public String[] arr;
     public String[] checkedFields = new String[fieldsQty];
 
-    public int checkFieldsQty(String str) {
-        arr = str.split(" ");
-        if (arr.length < fieldsQty) {
-            return -1;
-        }
-        if (arr.length > fieldsQty) {
-            return -2;
-        } else return arr.length;
+    public String[] makeMas(String str){
+        String[] arr = str.split(" ");
+        return arr;
     }
 
-    public void checkFieldsFormat() {
-        Pattern stringPattern = Pattern.compile("a-zA-Z");
-        Pattern birthdayPattern = Pattern.compile("\\d{2}\\.\\d{2}.\\d{4}");
-        Pattern telNumPattern = Pattern.compile("\\d{7}");
-        Pattern sexTypePattern = Pattern.compile("[mf]");
-
-        for (int i = 0; i < arr.length; i++) {
-            if (arr[i].matches(stringPattern.pattern())) {
-                checkedFields[i] = arr[i];
-            } else if (arr[i].matches(birthdayPattern.pattern())) {
-                checkedFields[i] = arr[i];
-            } else if (arr[i].matches(telNumPattern.pattern())) {
-                checkedFields[i] = arr[i];
-            } else if (arr[i].matches(sexTypePattern.pattern())) {
-                checkedFields[i] = arr[i];
-                System.out.println(checkedFields[i]);
-            }
+    public int checkFieldsQty(String[]array) {
+        System.out.println(Arrays.toString(array));
+        if (array.length < fieldsQty) {
+            return -1;
         }
-        System.out.println(Arrays.toString(checkedFields));
+        if (array.length > fieldsQty) {
+            return -2;
+        } else return array.length;
+    }
+
+    public void checkFieldsFormat(String[]array) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].matches("\\w+")) {
+                checkedFields[i] = array[i];
+            } else throw new RuntimeException("Invalid data format");
+            if (array[i].matches("\\d{2}\\.\\d{2}\\.\\d{4}")) {
+                checkedFields[i] = array[i];
+            } else throw new RuntimeException("Invalid data format");
+            if (array[i].matches("\\d{7}")) {
+                checkedFields[i] = array[i];
+            } else throw new RuntimeException("Invalid data format");
+            if (array[i].matches("[mf]")) {
+                checkedFields[i] = array[i];
+            } else throw new RuntimeException("Invalid data format");
+        }
     }
 
     public void writeToFile() throws IOException {
-        FileWriter fw = new FileWriter("Contacts.txt");
+        FileWriter fw = new FileWriter("Contacts.txt", true);
         try {
-            fw.write(Arrays.toString(checkedFields));
+            fw.write(Arrays.toString(checkedFields) + "\n");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException("Ошибка записи в файл");
         }
         try {
             fw.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IOException(e);
         }
     }
 }
